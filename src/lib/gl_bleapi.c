@@ -7,9 +7,9 @@
  Licensed under the Apache License, Version 2.0 (the "License");
  you may not use this file except in compliance with the License.
  You may obtain a copy of the License at
- 
+
  http://www.apache.org/licenses/LICENSE-2.0
- 
+
  Unless required by applicable law or agreed to in writing, software
  distributed under the License is distributed on an "AS IS" BASIS,
  WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
@@ -41,28 +41,28 @@ gl_ble_cbs ble_msg_cb;
 void *ble_driver_thread_ctx = NULL;
 void *ble_watcher_thread_ctx = NULL;
 
-static int* msqid = NULL;
-static driver_param_t* _driver_param = NULL;
-static watcher_param_t* _watcher_param = NULL;
+static int *msqid = NULL;
+static driver_param_t *_driver_param = NULL;
+static watcher_param_t *_watcher_param = NULL;
 
 /************************************************************************************************************************************/
 GL_RET gl_ble_init(void)
 {
 	// err return if ble driver thread exist
-	if((NULL != _driver_param) || (NULL != ble_driver_thread_ctx))
+	if ((NULL != _driver_param) || (NULL != ble_driver_thread_ctx))
 	{
 		return GL_ERR_INVOKE;
 	}
 
 	// init work thread param
-	_driver_param = (driver_param_t*)malloc(sizeof(driver_param_t));
-	
+	_driver_param = (driver_param_t *)malloc(sizeof(driver_param_t));
+
 	// create an event message queue if it not exist
-	if(NULL == msqid)
+	if (NULL == msqid)
 	{
-		msqid = (int*)malloc(sizeof(int));
+		msqid = (int *)malloc(sizeof(int));
 		*msqid = msgget(IPC_PRIVATE, 0666 | IPC_CREAT);
-		if(*msqid == -1)
+		if (*msqid == -1)
 		{
 			log_err("create msg queue error!!!\n");
 			return GL_UNKNOW_ERR;
@@ -72,15 +72,16 @@ GL_RET gl_ble_init(void)
 
 	/* Init device manage */
 	ble_dev_mgr_init();
-	
+
 	// init hal
 	hal_init();
 
 	// create a thread to recv module message
-    int ret;
-    ret = HAL_ThreadCreate(&ble_driver_thread_ctx, ble_driver, _driver_param, NULL, NULL);
-    if (ret != 0) {
-        log_err("pthread_create ble_driver_thread_ctx failed!\n");
+	int ret;
+	ret = HAL_ThreadCreate(&ble_driver_thread_ctx, ble_driver, _driver_param, NULL, NULL);
+	if (ret != 0)
+	{
+		log_err("pthread_create ble_driver_thread_ctx failed!\n");
 		// free driver_param_t & driver ctx
 		free(_driver_param);
 		_driver_param = NULL;
@@ -88,11 +89,11 @@ GL_RET gl_ble_init(void)
 
 		// close hal fd
 		hal_destroy();
-		
+
 		// destroy device list
 		ble_dev_mgr_destroy();
-        return GL_UNKNOW_ERR;
-    }
+		return GL_UNKNOW_ERR;
+	}
 
 	// reset ble module to make sure it is a usable mode
 	gl_ble_hard_reset();
@@ -117,7 +118,7 @@ GL_RET gl_ble_destroy(void)
 	ble_dev_mgr_destroy();
 
 	// destroy evt msg queue
-	if(-1 == msgctl(*msqid, IPC_RMID, NULL))
+	if (-1 == msgctl(*msqid, IPC_RMID, NULL))
 	{
 		log_err("msgctl error");
 		return GL_UNKNOW_ERR;
@@ -130,25 +131,25 @@ GL_RET gl_ble_destroy(void)
 
 GL_RET gl_ble_subscribe(gl_ble_cbs *callback)
 {
-	if(NULL == callback)
+	if (NULL == callback)
 	{
 		return GL_ERR_PARAM;
 	}
 
 	// error return if watcher thread exist
-	if((NULL != _watcher_param) || (NULL != ble_watcher_thread_ctx))
+	if ((NULL != _watcher_param) || (NULL != ble_watcher_thread_ctx))
 	{
 		return GL_ERR_INVOKE;
 	}
 
-	_watcher_param = (watcher_param_t*)malloc(sizeof(watcher_param_t));
+	_watcher_param = (watcher_param_t *)malloc(sizeof(watcher_param_t));
 
 	// create an event message queue if it not exist
-	if(NULL == msqid)
+	if (NULL == msqid)
 	{
-		msqid = (int*)malloc(sizeof(int));
+		msqid = (int *)malloc(sizeof(int));
 		*msqid = msgget(IPC_PRIVATE, 0666 | IPC_CREAT);
-		if(*msqid == -1)
+		if (*msqid == -1)
 		{
 			log_err("create msg queue error!!!\n");
 			return GL_UNKNOW_ERR;
@@ -157,18 +158,18 @@ GL_RET gl_ble_subscribe(gl_ble_cbs *callback)
 	_watcher_param->evt_msgid = *msqid;
 	_watcher_param->cbs = callback;
 
-    int ret;
-    ret = HAL_ThreadCreate(&ble_watcher_thread_ctx, ble_watcher, _watcher_param, NULL, NULL);
-    if (ret != 0) {
-        log_err("pthread_create failed!\n");
+	int ret;
+	ret = HAL_ThreadCreate(&ble_watcher_thread_ctx, ble_watcher, _watcher_param, NULL, NULL);
+	if (ret != 0)
+	{
+		log_err("pthread_create failed!\n");
 		// free watcher_param_t
 		free(_watcher_param);
 		_watcher_param = NULL;
-        return GL_UNKNOW_ERR;
-    }
+		return GL_UNKNOW_ERR;
+	}
 
 	return GL_SUCCESS;
-
 }
 
 GL_RET gl_ble_unsubscribe(void)
@@ -187,7 +188,6 @@ GL_RET gl_ble_enable(int32_t enable)
 {
 	return ble_enable(enable);
 }
-
 
 GL_RET gl_ble_hard_reset(void)
 {
@@ -274,3 +274,12 @@ GL_RET gl_ble_set_notify(BLE_MAC address, int char_handle, int flag)
 	return ble_set_notify(address, char_handle, flag);
 }
 
+GL_RET gl_ble_sw_reset(uint8_t mode)
+{
+	return ble_sw_reset(mode);
+}
+
+GL_RET gl_ble_dfu_uart_flash_upload(uint8_t *file_path)
+{
+	return ble_dfu_uart_flash_upload(file_path);
+}

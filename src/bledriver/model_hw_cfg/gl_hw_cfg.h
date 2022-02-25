@@ -60,7 +60,8 @@ hw_cfg_t XE300_BLE_HW_CFG = {
 
 hw_cfg_t MT300N_V2_BLE_HW_CFG = {                                                                    
     "mt300n-v2",      // model name                                  
-    "/dev/ttyS1", // serial port name                            
+    "/dev/ttyS1", // serial port name 
+    //"/dev/ttyUSB0", // serial port name                                
     115200,         // baud rate (bits/second)                     
     0,              // true enables RTS/CTS flow control           
     1,              // rst trigger: 1 means high, 0 means low      
@@ -101,6 +102,15 @@ hw_cfg_t B2200_BLE_HW_CFG = {
     0,              // true enables RTS/CTS flow control           
     1,              // rst trigger: 1 means high, 0 means low      
     43,              // RTS IO                                      
+};
+
+hw_cfg_t S200_BLE_HW_CFG = {                                                                    
+    "s200",         // model name                                  
+    "/dev/ttyS0",   // serial port name                            
+    115200,         // baud rate (bits/second)                     
+    0,              // true enables RTS/CTS flow control           
+    1,              // rst trigger: 1 means high, 0 means low      
+    1,              // RTS IO                                      
 };
 
 

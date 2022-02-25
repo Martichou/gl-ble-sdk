@@ -47,6 +47,8 @@
 #define ble_read_char                   silabs_ble_read_char
 #define ble_write_char                  silabs_ble_write_char
 #define ble_set_notify                  silabs_ble_set_notify
+#define ble_sw_reset                    silabs_ble_sw_reset
+#define ble_dfu_uart_flash_upload       silabs_ble_dfu_uart_flash_upload
 
 #endif
 

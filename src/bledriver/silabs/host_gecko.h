@@ -2657,7 +2657,7 @@ static inline struct gecko_msg_dfu_flash_set_address_rsp_t* gecko_cmd_dfu_flash_
     
     gecko_handle_command(gecko_cmd_msg->header,&gecko_cmd_msg->data.payload);
     
-    return NULL;//.rsp_dfu_flash_set_address;
+    return &gecko_rsp_msg->data.rsp_dfu_flash_set_address;
 }
 
 /** 
@@ -2678,7 +2678,7 @@ static inline struct gecko_msg_dfu_flash_upload_rsp_t* gecko_cmd_dfu_flash_uploa
     
     gecko_handle_command(gecko_cmd_msg->header,&gecko_cmd_msg->data.payload);
     
-    return NULL;//.rsp_dfu_flash_upload;
+    return &gecko_rsp_msg->data.rsp_dfu_flash_upload;
 }
 
 /** 
@@ -2697,7 +2697,7 @@ static inline struct gecko_msg_dfu_flash_upload_finish_rsp_t* gecko_cmd_dfu_flas
     
     gecko_handle_command(gecko_cmd_msg->header,&gecko_cmd_msg->data.payload);
     
-    return NULL;//.rsp_dfu_flash_upload_finish;
+    return &gecko_rsp_msg->data.rsp_dfu_flash_upload_finish;
 }
 
 /** 

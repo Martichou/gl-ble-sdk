@@ -312,37 +312,52 @@ int main(int argc, char *argv[])
 		printf("gl_ble_connect failed: %d\n", ret);
 		exit(-1);
 	}
-
-	gl_ble_service_list_t service_list = {0};
-	for (size_t i = 0; i < 20; i++)
+	while (1)
 	{
-		sleep(1);
-		bzero(&service_list, sizeof(gl_ble_service_list_t));
-		ret = gl_ble_get_service(&service_list, address_u8);
-		if (GL_SUCCESS != ret)
+		sleep(5);
+		gl_ble_service_list_t service_list = {0};
+		for (size_t i = 0; i < 20; i++)
 		{
-			printf("gl_ble_get_service failed: %d\n", ret);
-			continue;
+			bzero(&service_list, sizeof(gl_ble_service_list_t));
+			ret = gl_ble_get_service(&service_list, address_u8);
+			if (GL_SUCCESS != ret)
+			{
+				printf("gl_ble_get_service failed: %d\n", ret);
+				// start
+				ret = gl_ble_connect(address_u8, address_type, phys);
+				if (GL_SUCCESS != ret)
+				{
+					printf("gl_ble_connect failed: %d\n", ret);
+					exit(-1);
+				}
+				usleep(500000);
+				continue;
+			}
+			else
+			{
+				printf_service_list(&service_list);
+				break;
+			}
 		}
-		else
-		{
-			printf_service_list(&service_list);
-			break;
-		}
-	}
 
-	for (size_t i = 0; i < service_list.list_len; i++)
-	{
-		usleep(200000);
-		gl_ble_char_list_t char_list = {0};
-		ret = gl_ble_get_char(&char_list, address_u8, service_list.list[i].handle);
-		if (GL_SUCCESS != ret)
+		for (size_t i = 0; i < service_list.list_len; i++)
 		{
-			printf("gl_ble_get_char_%d failed: %d\n", service_list.list[i].handle, ret);
-			continue;
+			for (size_t j = 0; j < 10; j++)
+			{
+				// usleep(500000);
+				gl_ble_char_list_t char_list = {0};
+				ret = gl_ble_get_char(&char_list, address_u8, service_list.list[i].handle);
+				if (GL_SUCCESS != ret)
+				{
+					printf("gl_ble_get_char_%d failed: %d\n", service_list.list[i].handle, ret);
+					continue;
+				}
+				printf("gl_ble_get_char_%d failed: %d\n", service_list.list[i].handle, ret);
+				printf_char_list(&char_list);
+			}
 		}
-		printf("gl_ble_get_char_%d failed: %d\n", service_list.list[i].handle, ret);
-		printf_char_list(&char_list);
+
+		printf("\n\n\n");
 	}
 
 	ret = gl_ble_write_char(address_u8, 16, "48656C6C6F20736572766572202E", 0);
@@ -353,7 +368,6 @@ int main(int argc, char *argv[])
 
 	while (1)
 	{
-
 		sleep(1000);
 	}
 

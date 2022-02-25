@@ -64,7 +64,6 @@ void* silabs_driver(void* arg)
     evt_msqid = driver_param.evt_msgid;
 
     while (1) {
-
         // Check for stack event.
 		evt = gecko_wait_event();
 
@@ -223,7 +222,7 @@ struct gecko_cmd_packet* gecko_wait_message(void) //wait for event from system
             return 0;
         }
     }
-
+log_hexdump(payload,msg_length);
 	if(ENDIAN)  
 	{
 		reverse_rev_payload(pck);
@@ -333,8 +332,31 @@ void silabs_event_handler(struct gecko_cmd_packet *p)
     return ;
 }
 
+// int wait_rsp_evt(uint32_t evt_id, uint32_t timeout)
+// {
+//     uint32_t current_time_us = 0, start_time_us = 0;
+//     uint32_t spend = 0;
+
+// 	uint32_t timeout_us = timeout * 1000;
+
+//     start_time_us = utils_get_timestamp();
+
+//     while (timeout_us > spend) {
+// 		if (evt_id == BGLIB_MSG_ID(evt->header)) {
+//             printf("evt->header = %d\n",evt->header);
+// 			return 0;
+// 		}
+		
+//         current_time_us = utils_get_timestamp();
+//         spend = current_time_us - start_time_us;
+//     }
+
+//     return -1;
+// }
+
 int wait_rsp_evt(uint32_t evt_id, uint32_t timeout)
 {
+    uint32_t current_time_us = 0, start_time_us = 0;
     uint32_t spend = 0;
 
     while (timeout > spend) {
@@ -346,21 +368,6 @@ int wait_rsp_evt(uint32_t evt_id, uint32_t timeout)
     }
     return -1;
 }
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
 
 
 

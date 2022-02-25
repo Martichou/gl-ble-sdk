@@ -49,9 +49,6 @@ extern int    gecko_queue_r;
 extern struct gecko_cmd_packet special_evt[SPE_EVT_MAX];
 extern int special_evt_num;
 
-
-
-
 #define BGLIB_INITIALIZE(OFUNC, IFUNC) bglib_output = OFUNC; bglib_input = IFUNC; bglib_peek = NULL;
 
 int wait_rsp_evt(uint32_t evt_id, uint32_t timeout);
