@@ -77,10 +77,30 @@ int32_t uartTx(uint32_t dataLength, uint8_t* data);
 
 int32_t uartCacheClean(void);
 
+/***********************************************************************************************//**
+ *  \brief  Set the usB-TTL RTS pin level status
+ *  \param[in]  0:low level  1:high level
+ *  \return  0:success -1:failed
+ **************************************************************************************************/
 int32_t setRtsStu(char stu);
+
+/***********************************************************************************************//**
+ *  \brief  Set the USB-TTL DTR pin level status.
+ *  \param[in]  0:low level  1:high level
+ *  \return  0:success -1:failed
+ **************************************************************************************************/
 int32_t setDtrStu(char stu);
 
+/***********************************************************************************************//**
+ *  \brief  GET the USB-TTL DSR pin level status.
+ *  \return -1:failed  0:low level  1:high level
+ **************************************************************************************************/
 int32_t getDsrStu(void);
+
+/***********************************************************************************************//**
+ *  \brief  GET the USB-TTL CTS pin level status.
+ *  \return  -1:failed  0:low level  1:high level
+ **************************************************************************************************/
 int32_t getCtsStu(void);
 
 #endif
